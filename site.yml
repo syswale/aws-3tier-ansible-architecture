@@ -1,0 +1,35 @@
+---
+- name: Configure Private Web Servers
+  hosts: webservers
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Start Nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Deploy Custom HTML Page
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <head><title>My Cloud Project</title></head>
+          <body>
+            <h1>Welcome to Olawale's Web App</h1>
+            <p>This request was served by: <b>{{ ansible_hostname }}</b></p>
+            <p>Private IP: {{ ansible_default_ipv4.address }}</p>
+            <hr>
+            <h3>About Me</h3>
+            <p>New to this. Let's get it</p>
+          </body>
+          </html>
